@@ -1,25 +1,24 @@
 import { Request, Response } from "express";
 import { PostRequest } from "../interfaces/postRequest";
 import { PostService } from "../services/postService";
+import { messages } from "../utils/messages";
 
 export class PostController {
   static async create(req: Request, res: Response) {
     try {
       const { title, body, tagIds } = req.body;
       if (!title || !body || !tagIds.length) {
-        return res.status(400).json({
-          error: "All fields must be filled!",
+        return res.status(messages.fieldsNotProvided.status).json({
+          error: messages.fieldsNotProvided.message,
         });
       }
 
       await PostService.create(title, body, tagIds);
 
-      return res.status(201).json({
-        message: "Successful created!",
-      });
+      return res.status(201).send();
     } catch {
-      return res.status(500).json({
-        error: "A server error has ocurred!",
+      return res.status(messages.serverError.status).json({
+        error: messages.serverError.message,
       });
     }
   }
@@ -28,35 +27,29 @@ export class PostController {
     try {
       const { title, body, tagIds } = req.body;
       if (!title || !body || !tagIds.length) {
-        return res.status(400).json({
-          error: "All fields must be filled!",
+        return res.status(messages.fieldsNotProvided.status).json({
+          error: messages.fieldsNotProvided.message,
         });
       }
 
       await PostService.update(req.post, title, body, tagIds);
 
-      return res.status(200).json({
-        message: "Successful updated!",
-      });
+      return res.status(204).send();
     } catch {
-      return res.status(500).json({
-        error: "A server error has ocurred!",
+      return res.status(messages.serverError.status).json({
+        error: messages.serverError.message,
       });
     }
   }
 
   static async delete(req: PostRequest, res: Response) {
     try {
-      
-
       await PostService.delete(req.post);
 
-      return res.status(200).json({
-        message: "Successful deleted!",
-      });
+      return res.status(204).send();
     } catch {
-      return res.status(500).json({
-        error: "A server error has ocurred!",
+      return res.status(messages.serverError.status).json({
+        error: messages.serverError.message,
       });
     }
   }
@@ -65,8 +58,8 @@ export class PostController {
     try {
       return res.json(req.post);
     } catch {
-      return res.status(500).json({
-        error: "A server error has ocurred!",
+      return res.status(messages.serverError.status).json({
+        error: messages.serverError.message,
       });
     }
   }
@@ -77,8 +70,8 @@ export class PostController {
 
       return res.json(posts);
     } catch {
-      return res.status(500).json({
-        error: "A server error has ocurred!",
+      return res.status(messages.serverError.status).json({
+        error: messages.serverError.message,
       });
     }
   }

@@ -3,29 +3,30 @@ import { PostRequest } from "../interfaces/postRequest";
 import { TagRequest } from "../interfaces/TagRequest";
 import { PostService } from "../services/postService";
 import { TagService } from "../services/tagService";
+import { messages } from "../utils/messages";
 
 export class PostMiddleware {
   static async postExists(req: PostRequest, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       if (!id) {
-        return res.status(400).json({
-          error: "Id field must be filled!",
+        return res.status(messages.idNotProvided.status).json({
+          error: messages.idNotProvided.message,
         });
       }
       const post = await PostService.findById(Number(id));
 
       if (!post) {
-        return res.status(400).json({
-          error: "Not found!",
+        return res.status(messages.notFound.status).json({
+          error: messages.notFound.message,
         });
       }
 
       req.post = post;
       return next();
     } catch (e) {
-      return res.status(500).json({
-        error: "A server error has ocurred!",
+      return res.status(messages.serverError.status).json({
+        error: messages.serverError.message,
       });
     }
   }
